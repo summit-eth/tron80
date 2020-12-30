@@ -329,10 +329,32 @@ document.addEventListener('DOMContentLoaded', function(){
 
   document.getElementById("invest_now").addEventListener('click', async ()=>{ deposit( document.getElementById("invest_amount").value) });
   document.getElementById("withdraw").addEventListener('click', async (e)=>{
-    e.preventDefault();
-    window.tronified.contract.withdraw().send()
-    .then(response => swal("Withdrawn!", "You have withdrawn your balance", "success"))
-    .catch(function(err){ swal("Oh no :/", err, "ERROR") })
+	e.preventDefault();
+	if(new Date().getTime() < FULL_LAUNCH * 1e3) {
+		  function pad(num) {
+			return num > 9 ? num : '0'+num;
+		  };
+		  var
+			now = new Date(),
+			kickoff = new Date(FULL_LAUNCH * 1000), // Either new or .parse(), not both!
+			diff = kickoff - now,
+			days = Math.floor( diff / (1000*60*60*24) ),
+			hours = Math.floor( diff / (1000*60*60) ),
+			mins = Math.floor( diff / (1000*60) ),
+			secs = Math.floor( diff / 1000 ),
+			dd = days,
+			hh = hours - days * 24,
+			mm = mins - hours * 60,
+			ss = secs - mins * 60;
+		alert("Withdrawable in " + 
+				pad(hh) + ':' + //' hours ' +
+				pad(mm) + ':' + //' minutes ' +
+				pad(ss)) ; //+ ' seconds' ;
+	} else {
+		window.tronified.contract.withdraw().send()
+		.then(response => swal("Withdrawn!", "You have withdrawn your balance", "success"))
+		.catch(function(err){ swal("Oh no :/", err, "ERROR") })
+	}
   });
   // document.getElementById("reinvest").addEventListener('click', async (e)=>{
   //   e.preventDefault();
